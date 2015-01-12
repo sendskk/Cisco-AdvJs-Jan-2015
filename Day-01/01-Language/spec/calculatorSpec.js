@@ -128,8 +128,8 @@ describe("A calculator", function(){
     });
     it("should be able to add functions returning array of numbers", function(){
         //Arrange
-        var f1 = function(){ retrurn [10,30];},
-            f2 = function(){ retrurn [20,40];},
+        var f1 = function(){ return [10,30];},
+            f2 = function(){ return [20,40];},
             expectedResult = 100;
         
         //Act
@@ -140,8 +140,8 @@ describe("A calculator", function(){
     });
     it("should be able to add array of functions returning array of numbers", function(){
         //Arrange
-        var f1 = function(){ retrurn [10,30];},
-            f2 = function(){ retrurn [20,40];},
+        var f1 = function(){ return [10,30];},
+            f2 = function(){ return [20,40];},
             expectedResult = 100;
         
         //Act

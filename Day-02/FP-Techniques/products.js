@@ -55,10 +55,84 @@ console.group("Sorting")
 console.groupEnd();
 
 //filter
+console.group("Filter");
+    var filter = function(list, predicate){
+        var result = [];
+        for(var i=0;i<list.length;i++)
+            if (predicate(list[i]))
+                result.push(list[i]);
+        return result;
+    }
+    var costProductPredicate = function(product){
+        return product.cost > 50;
+    }
+    console.group("Costly products [ cost > 50 ]");
+    var costlyProducts = filter(products,costProductPredicate);
+    console.table(costlyProducts);
+    console.groupEnd();
+
+    /*var affordableProductPredicate = function(product){
+        return !costProductPredicate(product);
+    }*/
+    var notPredicate = function(predicate){
+        return function(){
+            return !predicate.apply(this,arguments);
+        }
+    }
+    var affordableProductPredicate = notPredicate(costProductPredicate);
+    console.group("Affordable products [ !costly products ]");
+    var affordableProducts = filter(products,affordableProductPredicate);
+    console.table(affordableProducts);
+    console.groupEnd();
+
+console.groupEnd();
+
 //min
+console.group("Min");
+    var min = function(list, valueSelector){
+        var result = valueSelector(list[0]);
+        for(var i=1;i<list.length;i++){
+            var value = valueSelector(list[i]);
+            if (value < result) result = value;
+        }
+        return result;
+    }
+    console.log("Min cost =", min(products, function(p){ return p.cost; }));
+console.groupEnd();
 //max
 //sum
 //any
 //all
 //groupBy
+console.group("Group By");
+    var groupBy = function(list, keySelector){
+        var result = {};
+        for(var i=0;i<list.length;i++){
+            var key = keySelector(list[i]);
+            /*if (typeof result[key] === "undefined")
+                result[key] = [];*/
+            result[key] = result[key] || [];
+            result[key].push(list[i]);
+        }
+        return result;
+    }
+    var productsByCategory = groupBy(products,function(p){ return p.category; });
+    console.group("Category - 1")
+    console.table(productsByCategory[1]);
+    console.groupEnd();
 
+    console.group("Category - 2")
+    console.table(productsByCategory[2]);
+    console.groupEnd();
+
+    var keySelectorByCost = function(p){ return p.cost > 50 ? "costly" : "affordable";};
+    var productsByCost = groupBy(products, keySelectorByCost);
+
+    console.group("Cost - 'affordable'")
+    console.table(productsByCost['affordable']);
+    console.groupEnd();
+
+    console.group("'costly'")
+    console.table(productsByCost['costly']);
+    console.groupEnd();
+console.groupEnd();

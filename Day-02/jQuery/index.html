@@ -14,18 +14,83 @@
     </style>
     <script src="jquery-1.11.2.js"></script>
     <script>
+        //Model
+        function SalaryCalculator(){
+            var data ={
+                basic : 0,
+                hra : 0,
+                da : 0,
+                tax : 0,
+                salary : 0
+            };
+            this.get = function(attrName){
+                return data[attrName];
+            };
+            this.set = function(attrName,value){
+                data[attrName] = value;
+                triggerChange(attrName);
+            }
+            var subscriptions = {};
+            this.addSubscriber = function(attrName, subscriptionFn){
+                subscriptions[attrName] = subscriptions[attrName] || [];
+                subscriptions[attrName].push(subscriptionFn);
+            };
+            this.removeSubscriber = function(){
+                //home work
+            };
+            var self = this;
+            function triggerChange(attrName){
+                var subscriptionFns = subscriptions[attrName] || [];
+                for(var i=0;i<subscriptionFns.length;i++){
+                    subscriptionFns[i].call(self);
+                }
+            }
+        }
+        SalaryCalculator.prototype.calculate = function(){
+            var gross = this.get('basic') + this.get('hra') + this.get('da');
+            var net = gross * ((100-this.get('tax'))/100);
+            this.set('salary', net);
+
+        }
+
+        //View
        $(function(){
-           $("#btnCalculate").click(function(){
-               var basic = parseInt($("#txtBasic").val(),10),
-                   hra = parseInt($("#txtHra").val(),10),
-                   da = parseInt($("#txtDa").val(),10),
-                   tax = parseInt($("#rangeTax").val(),10);
-               var gross = basic + hra + da;
-               var net = gross * ((100-tax)/100);
-               $("#divResult").html(net);
+           window.calculator = new SalaryCalculator();
+           //Model changes
+           calculator.addSubscriber("salary", function(){
+               $("#divResult").html(this.get("salary"));
+           });
+           calculator.addSubscriber("basic", function(){
+               $("#txtBasic").val(this.get("basic"));
+           });
+           calculator.addSubscriber("hra", function(){
+               $("#txtHra").val(this.get("hra"));
+           });
+           calculator.addSubscriber("da", function(){
+               $("#txtDa").val(this.get("da"));
+           });
+           calculator.addSubscriber("tax", function(){
+               var tax = this.get("tax");
+               $("#rangeTax").val(tax);
+               $("#spanTax").html(tax + '%');
+           });
+
+           //UI changes
+           $("#txtBasic").change(function(){
+                calculator.set('basic', parseInt(this.value,10));
+           });
+           $("#txtHra").change(function(){
+                calculator.set('hra', parseInt(this.value,10));
+           });
+           $("#txtDa").change(function(){
+                calculator.set('da', parseInt(this.value,10));
            });
            $("#rangeTax").change(function(){
-               $("#spanTax").html(this.value + '%');
+                calculator.set('tax', parseInt(this.value,10));
+           });
+           $("#btnCalculate").click(function(){
+               calculator.calculate();
+
            });
 
        });

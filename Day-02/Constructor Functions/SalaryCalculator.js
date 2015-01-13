@@ -16,4 +16,4 @@ var SalaryCalculator = (function(){
        return instanceCount;
    }
    return SalaryCalculator;
-})()
+})();

@@ -5,8 +5,10 @@
     <title>Click Tracker</title>
     <script>
         (function (){
-            window.addEventListener("DOMContentLoaded", init);
             var count = 0;
+
+            window.addEventListener("DOMContentLoaded", init);
+
             function init(){
                 document.getElementById("btnTrack").addEventListener("click", onBtnTrackClick);
             }

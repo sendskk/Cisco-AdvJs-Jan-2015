@@ -16,3 +16,6 @@ function getPrimeFinder(){
       return cache[n];
   }
 }
+
+var isPrime = getPrimeFinder();
+isPrime(1000);

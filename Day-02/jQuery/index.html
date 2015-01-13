@@ -14,15 +14,21 @@
     </style>
     <script src="jquery-1.11.2.js"></script>
     <script>
-        function greet(){
-          var msg = "Hi " + $("#txtName").val();
-          $("#divMessage").html(msg);
-        }
-        function init(){
-            $("#btnGreet").click(greet)
-        }
-        //$(document).ready(init);
-        $(init);
+       $(function(){
+           $("#btnCalculate").click(function(){
+               var basic = parseInt($("#txtBasic").val(),10),
+                   hra = parseInt($("#txtHra").val(),10),
+                   da = parseInt($("#txtDa").val(),10),
+                   tax = parseInt($("#rangeTax").val(),10);
+               var gross = basic + hra + da;
+               var net = gross * ((100-tax)/100);
+               $("#divResult").html(net);
+           });
+           $("#rangeTax").change(function(){
+               $("#spanTax").html(this.value + '%');
+           });
+
+       });
     </script>
 </head>
 <body>
